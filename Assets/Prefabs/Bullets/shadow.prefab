@@ -199,7 +199,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxHitHeightForBullet: 1
+  maxHitHeightForBullet: 0.8
 --- !u!1 &8755269045618876854
 GameObject:
   m_ObjectHideFlags: 0

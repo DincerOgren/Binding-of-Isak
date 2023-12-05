@@ -6,16 +6,28 @@ using UnityEngine;
 
 public class PlayerShooterPrototype : MonoBehaviour
 {
+    [Header("Bullet ScriptableObject (Temp)")]
     public BulletPrototypeSO prototypeSO;
 
-    public GameObject bulletPrefab;
+    [Header("Bullet Exit Points")]
     public Transform[] bulletExitPoints;
+
+    [Header("Bullet Prefab For Me To SEE")]
+    [SerializeField] private GameObject bulletPrefab;
+
+    [Header("Directional Bullet Speed Multipliers")]
     public float sameDirectionBulletSpeedMultiplier = 1.5f;
+    public float oppositeDirectionBulletSpeedMultiplier = .6f;
+
+    [Header("Shoot Cooldown")]
     public float shootCooldown = 1f;
-    public float divideAmount = 2f;
+
+    [Header("Player Velocity Divider")]
+    public float playerVelDivideAmount = 6f;
 
     private float timer = Mathf.Infinity;
 
+    [Header("Fire Input Vector")]
     public Vector2 fireInput;
 
     int exitPointNum = 0;
@@ -108,7 +120,7 @@ public class PlayerShooterPrototype : MonoBehaviour
         if (Vector2.Dot(dir.normalized, GetMovementDir().normalized) < 0)
         {
             print("-1 ateslendi");
-            spawnedPrefab.GetComponent<BulletShadow>().SetSpeedForBullet(prototypeSO.bulletSpeed * dir.normalized);
+            spawnedPrefab.GetComponent<BulletShadow>().SetSpeedForBullet(prototypeSO.bulletSpeed * oppositeDirectionBulletSpeedMultiplier * dir.normalized);
         }
         // IF PLAYER SHOOTS THE SAME WAY OF HIS MOVEMENT DIRECTION
         else if (Vector2.Dot(dir.normalized, GetMovementDir().normalized) > 0)
@@ -119,7 +131,7 @@ public class PlayerShooterPrototype : MonoBehaviour
         else
         {
             print("else ateslendi");
-            spawnedPrefab.GetComponent<BulletShadow>().SetSpeedForBullet(prototypeSO.bulletSpeed * (dir + (GetMovementDir() / divideAmount)).normalized);
+            spawnedPrefab.GetComponent<BulletShadow>().SetSpeedForBullet(prototypeSO.bulletSpeed * (dir + (GetMovementDir() / playerVelDivideAmount)).normalized);
         }
     }
 
