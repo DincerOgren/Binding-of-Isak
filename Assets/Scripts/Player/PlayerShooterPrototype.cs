@@ -126,11 +126,11 @@ public class PlayerShooterPrototype : MonoBehaviour
     private Vector2 GetMovementDir()
     {
         var a = playerRb.velocity;
-        //if (a.magnitude > 3f)
+        if (a.magnitude > 3f)
         {
             return a;
         }
-        //else
-        //    return Vector2.zero;
+        else
+            return a/2;
     }
 }
