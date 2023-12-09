@@ -660,6 +660,7 @@ GameObject:
   - component: {fileID: 1122829262}
   - component: {fileID: 1122829261}
   - component: {fileID: 1122829260}
+  - component: {fileID: 1122829263}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -680,8 +681,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obje: {fileID: 1069589717}
-  xLen: 3
-  yLen: 2
+  xLen: 8
+  yLen: 8
   cellSize: 1
 --- !u!212 &1122829261
 SpriteRenderer:
@@ -750,6 +751,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1122829263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122829259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e2f7115249c18840b72120178aa9a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openList: []
+  closeList: []
+  currentNode:
+    number: {x: 0, y: 0}
+    hCost: 0
+    gCost: 0
+    fCost: 0
+  targetNode:
+    number: {x: 0, y: 0}
+    hCost: 0
+    gCost: 0
+    fCost: 0
+  shouldCalculate: 0
+  isFirst: 0
+  first: {x: 0, y: 0}
+  second: {x: 0, y: 0}
 --- !u!1 &1247610958
 GameObject:
   m_ObjectHideFlags: 0
