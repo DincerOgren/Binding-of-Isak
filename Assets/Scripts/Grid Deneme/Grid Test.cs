@@ -2,7 +2,9 @@ using CodeMonkey.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class GridTest : MonoBehaviour
 {
@@ -57,6 +59,39 @@ public class GridTest : MonoBehaviour
 
     }
 
+    public void UpdateGText(GridNode node)
+    {
+        Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Gcost = " + node.gCost);
+        grid.textArray[node.number.x,node.number.y].text = node.gCost.ToString("F1");
+    }
+
+    public void UpdateText(int x,int y,string context)
+    {
+        grid.textArray[x, y].text = context;
+    }
+
+    public void WriteParentedNodes()
+    {
+        foreach (var item in grid.GetGridArray())
+        {
+            if (item.parent != null)
+            {
+                Debug.Log("Grid has parent [" + item.number.x + "," + item.number.y + "]");
+            }
+        }
+    }
+
+
+    public void TraverseReverse(GridNode node)
+    {
+        GridNode temp = node;
+        while (temp != null)
+        {
+            Debug.Log("Grid[" + temp.number.x + "," + temp.number.y + "]");
+            temp = temp.parent;
+        }
+        
+    }
     private void OnDrawGizmos()
     {
         //for (int i = 0; i < 2; i++)

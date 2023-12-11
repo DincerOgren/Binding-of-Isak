@@ -770,13 +770,19 @@ MonoBehaviour:
     hCost: 0
     gCost: 0
     fCost: 0
+  startNode:
+    number: {x: 0, y: 0}
+    hCost: 0
+    gCost: 0
+    fCost: 0
   targetNode:
     number: {x: 0, y: 0}
     hCost: 0
     gCost: 0
     fCost: 0
+  traverse: 1
   shouldCalculate: 0
-  isFirst: 0
+  isFirst: 1
   first: {x: 0, y: 0}
   second: {x: 0, y: 0}
 --- !u!1 &1247610958

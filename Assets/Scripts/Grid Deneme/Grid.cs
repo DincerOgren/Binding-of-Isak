@@ -13,6 +13,7 @@ public class Grid
     int yLength;
     GridNode[,] gridArray;
     int cellSize;
+    public TextMeshPro[,] textArray;
     public Grid(int xLen, int yLen, int cellSize, Transform transform)
     {
         gridStartPosition = CalculateStartPosForThisObject(transform);
@@ -21,7 +22,7 @@ public class Grid
         this.cellSize = cellSize;
 
         gridArray = new GridNode[xLen, yLen];
-
+        textArray = new TextMeshPro[xLen, yLen];
         for (int x = 0; x < gridArray.GetLength(0); x++)
         {
             for (int y = 0; y < gridArray.GetLength(1); y++)
@@ -36,6 +37,7 @@ public class Grid
                 // gridArray[x, y].number = new Vector2Int(x, y);
                 //gridArray[x, y].number.x = x;
                 //gridArray[x, y].number.y = y; 
+                textArray[x, y] = CreateWorldText(gridArray[x, y].gCost.ToString(), GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * .5f, 5, Color.white);
                 DrawCube(gridStartPosition + (cellSize * x * Vector3.right) + (cellSize * y * Vector3.up), cellSize);
             }
         }
@@ -92,7 +94,7 @@ public class Grid
     }
     public Vector3 GetWorldPosition(int x, int y)
     {
-        return new Vector3(x, y) * cellSize;
+        return new Vector3(x, y) * cellSize + gridStartPosition;
     }
 
     public float GetGridValue(int x, int y)
@@ -100,11 +102,21 @@ public class Grid
         return gridArray[x, y].fCost;
     }
 
+    public GridNode[,] GetGridArray()
+    {
+        return gridArray;
+    }
     public GridNode GetGridNumber(Vector3 worldPos)
     {
         GetXY(worldPos, out int x, out int y);
         Debug.LogWarning("Grid [" + x + "," + y + "]");
-        return gridArray[x, y];
+
+        if (x<0||y<0 ||x>=xLength || y>=yLength)
+        {
+            return null;
+        }
+        else
+            return gridArray[x, y];
     }
 
     public List<GridNode> FindNeighbours(GridNode node)
@@ -113,14 +125,14 @@ public class Grid
         int x = node.number.x;
         int y = node.number.y;
 
-        if (y + 1 > 0) tempList.Add(FindNode(x, y + 1));
-        if (x + 1 > 0 && y + 1 > 0)  tempList.Add(FindNode(x + 1, y + 1));
-        if (x + 1 > 0) tempList.Add(FindNode(x + 1, y));
-        if (x + 1 > 0 && y - 1 > 0) tempList.Add(FindNode(x + 1, y - 1));
+        if (y + 1 > 0 && y + 1 < yLength) tempList.Add(FindNode(x, y + 1));
+        if (x + 1 > 0 && y + 1 > 0 && x + 1 < xLength && y + 1 < yLength) tempList.Add(FindNode(x + 1, y + 1));
+        if (x + 1 > 0 && x + 1 < yLength) tempList.Add(FindNode(x + 1, y));
+        if (x + 1 > 0 && y - 1 > 0 && x + 1 < xLength) tempList.Add(FindNode(x + 1, y - 1));
         if (y - 1 > 0) tempList.Add(FindNode(x, y - 1));
         if (x - 1 > 0 && y - 1 > 0) tempList.Add(FindNode(x - 1, y - 1));
         if (x - 1 > 0) tempList.Add(FindNode(x - 1, y));
-        if (x - 1 > 0 && y + 1 > 0) tempList.Add(FindNode(x - 1, y + 1));
+        if (x - 1 > 0 && y + 1 > 0 && y + 1 < yLength) tempList.Add(FindNode(x - 1, y + 1));
 
 
 
@@ -131,6 +143,25 @@ public class Grid
     {
         return gridArray[x, y];
     }
+
+
+    public TextMeshPro CreateWorldText(string textContent, Vector3 position, int fontSize, Color color)
+    {
+        // Create a new GameObject to hold the TextMeshPro component
+        GameObject textObject = new GameObject("WorldText");
+        textObject.transform.position = position;
+
+        // Add TextMeshPro component to the GameObject
+        TextMeshPro textMeshPro = textObject.AddComponent<TextMeshPro>();
+
+        // Set the text content, font size, and material
+        textMeshPro.text = textContent;
+        textMeshPro.fontSize = fontSize;
+        textMeshPro.color = color;
+        textMeshPro.alignment = TextAlignmentOptions.Center;
+        return textMeshPro;
+    }
+
 }
 
 [System.Serializable]
@@ -140,7 +171,7 @@ public class GridNode
     public float hCost;
     public float gCost;
     public float fCost;
-
+    public GridNode parent = null;
     public GridNode(int x = 0, int y = 0)
     {
         number.x = x;
