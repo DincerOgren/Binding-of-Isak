@@ -1,5 +1,6 @@
 using CodeMonkey.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class AStarPathfindingDeneme : MonoBehaviour
     public GridNode targetNode;
 
 
-
+    public bool stepByStep = false;
     public bool traverse = false;
     //DENEME 
     public bool shouldCalculate = false;
@@ -40,63 +41,7 @@ public class AStarPathfindingDeneme : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-
-            if (isFirst)
-            {
-
-                SetStartNode();
-                isFirst = false;
-            }
-            var list = GridTest.instance.grid.FindNeighbours(GridTest.instance.grid.GetGridNumber(UtilsClass.GetMouseWorldPosition()));
-
-            CalculateValues(list, GridTest.instance.grid.GetGridNumber(UtilsClass.GetMouseWorldPosition()), targetNode);
-
-
-            foreach (GridNode node in list)
-            {
-                Debug.LogError("Node[" + node.number.x + "," + node.number.y + "]" + " gcost= " + node.gCost + ", hcost = " + node.hCost + " , fcost = " + node.fCost);
-            }
-
-
-
-
-            if (traverse)
-            {
-
-                while (true)
-                {
-                    currentNode = GetLowestInOpenList();
-
-                    if (currentNode == targetNode)
-                    {
-                        break;
-                    }
-
-                    var liste = GridTest.instance.grid.FindNeighbours(currentNode);
-                    foreach (var neighbour in liste)
-                    {
-                        if (closeList.Contains(neighbour))
-                        {
-                            continue;
-                        }
-
-                        if (NewPath(neighbour) < neighbour.gCost || !openList.Contains(neighbour))
-                        {
-                            neighbour.gCost = NewPath(neighbour);
-                            neighbour.hCost = CalculateHCost(neighbour, targetNode);
-                            neighbour.fCost = CalculateFCost(neighbour);
-                            neighbour.parent = currentNode;
-                            GridTest.instance.UpdateGText(neighbour);
-
-
-                            if (!openList.Contains(neighbour))
-                            {
-                                openList.Add(neighbour);
-                            }
-                        }
-                    }
-                }
-            }
+            StartCoroutine(StartTRaverseMethod());
 
 
 
@@ -124,7 +69,77 @@ public class AStarPathfindingDeneme : MonoBehaviour
         }
     }
 
+   
 
+    IEnumerator StartTRaverseMethod()
+    {
+        if (isFirst)
+        {
+
+            SetStartNode();
+            isFirst = false;
+            var list = GridTest.instance.grid.FindNeighbours(GridTest.instance.grid.GetGridNumber(UtilsClass.GetMouseWorldPosition()));
+
+            CalculateValues(list, GridTest.instance.grid.GetGridNumber(UtilsClass.GetMouseWorldPosition()), targetNode);
+        }
+        
+
+
+       
+
+
+
+
+        if (traverse)
+        {
+
+            while (true)
+            {
+
+                if (!stepByStep)
+                {
+
+                    currentNode = GetLowestInOpenList();
+
+                    openList.Remove(currentNode);
+                    closeList.Add(currentNode);
+
+                    if (currentNode == targetNode)
+                    {
+                        Debug.LogError("Path Finded");
+                        break;
+                    }
+
+                    var liste = GridTest.instance.grid.FindNeighbours(currentNode);
+                    foreach (var neighbour in liste)
+                    {
+                        if (closeList.Contains(neighbour))
+                        {
+                            continue;
+                        }
+
+                        if (NewPath(neighbour) < neighbour.gCost || !openList.Contains(neighbour))
+                        {
+                            neighbour.gCost = NewPath(neighbour);
+                            neighbour.hCost = CalculateHCost(neighbour, targetNode);
+                            neighbour.fCost = CalculateFCost(neighbour);
+                            neighbour.parent = currentNode;
+
+
+                            if (!openList.Contains(neighbour))
+                            {
+                                openList.Add(neighbour);
+                            }
+                        }
+                        GridTest.instance.UpdateGText(neighbour);
+
+                    }
+                }
+                stepByStep = true;
+                yield return null;
+            }
+        }
+    }
 
     private float NewPath(GridNode neighbour)
     {
@@ -159,19 +174,18 @@ public class AStarPathfindingDeneme : MonoBehaviour
     private GridNode GetLowestInOpenList()
     {
         GridNode temp = null;
-        for (int i = 0; i < openList.Count; i++)
+        temp = openList[0];
+        foreach (var item in openList)
         {
-            temp = openList[i];
-            if (temp.fCost < openList[i].fCost)
+            if (item.fCost < temp.fCost)
             {
-                temp = openList[i];
+                temp = item;
             }
         }
-        if (temp != null)
-        {
-            openList.Remove(temp);
-            closeList.Add(temp);
-        }
+        
+        
+           
+        
         return temp;
     }
 

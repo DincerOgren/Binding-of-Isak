@@ -124,15 +124,15 @@ public class Grid
         List<GridNode> tempList = new List<GridNode>();
         int x = node.number.x;
         int y = node.number.y;
-
-        if (y + 1 > 0 && y + 1 < yLength) tempList.Add(FindNode(x, y + 1));
-        if (x + 1 > 0 && y + 1 > 0 && x + 1 < xLength && y + 1 < yLength) tempList.Add(FindNode(x + 1, y + 1));
-        if (x + 1 > 0 && x + 1 < yLength) tempList.Add(FindNode(x + 1, y));
-        if (x + 1 > 0 && y - 1 > 0 && x + 1 < xLength) tempList.Add(FindNode(x + 1, y - 1));
-        if (y - 1 > 0) tempList.Add(FindNode(x, y - 1));
-        if (x - 1 > 0 && y - 1 > 0) tempList.Add(FindNode(x - 1, y - 1));
-        if (x - 1 > 0) tempList.Add(FindNode(x - 1, y));
-        if (x - 1 > 0 && y + 1 > 0 && y + 1 < yLength) tempList.Add(FindNode(x - 1, y + 1));
+        Debug.LogError("x= "+x+" y = "+y);
+        if (y + 1 >= 0 && y + 1 < yLength) tempList.Add(FindNode(x, y + 1));
+        if (x + 1 >= 0 && y + 1 >= 0 && x + 1 < xLength && y + 1 < yLength) tempList.Add(FindNode(x + 1, y + 1));
+        if (x + 1 >= 0 && x + 1 < yLength) tempList.Add(FindNode(x + 1, y));
+        if (x + 1 >= 0 && y - 1 >= 0 && x + 1 < xLength) tempList.Add(FindNode(x + 1, y - 1));
+        if (y - 1 >= 0) tempList.Add(FindNode(x, y - 1));
+        if (x - 1 >= 0 && y - 1 >= 0) tempList.Add(FindNode(x - 1, y - 1));
+        if (x - 1 >= 0) tempList.Add(FindNode(x - 1, y));
+        if (x - 1 >= 0 && y + 1 >= 0 && y + 1 < yLength) tempList.Add(FindNode(x - 1, y + 1));
 
 
 

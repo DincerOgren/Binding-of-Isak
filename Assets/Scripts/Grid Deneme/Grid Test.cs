@@ -61,8 +61,8 @@ public class GridTest : MonoBehaviour
 
     public void UpdateGText(GridNode node)
     {
-        Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Gcost = " + node.gCost);
-        grid.textArray[node.number.x,node.number.y].text = node.gCost.ToString("F1");
+        Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Fcost = " + node.fCost);
+        grid.textArray[node.number.x,node.number.y].text = node.fCost.ToString("F1");
     }
 
     public void UpdateText(int x,int y,string context)
