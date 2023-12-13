@@ -162,6 +162,12 @@ public class Grid
         return textMeshPro;
     }
 
+    public Vector3 GetCenterPoint(GridNode node)
+    {
+        return GetWorldPosition(node.number.x,node.number.y);
+
+    }
+
 }
 
 [System.Serializable]
