@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,16 +12,18 @@ public class Health : MonoBehaviour
     public Sprite emptyHearthImage;
 
 
+    private bool isDead = false;
 
 
 
 
+    public bool takeDamage = false;
 
 
 
     private float currentHealth;
 
-    private void Awake()
+    private void Start()
     {
         if (this.CompareTag("Player"))
         {
@@ -29,4 +32,44 @@ public class Health : MonoBehaviour
 
         currentHealth = healthAmount;
     }
+
+
+    private void Update()
+    {
+        if (takeDamage)
+        {
+            takeDamage = false;
+            TakeDamage(.5f);
+        }
+    }
+
+    public void TakeDamage(float damageAmount)      //instigator koyarsýn fonksiyona belki
+    {
+
+        if (!isDead)
+        {
+
+            currentHealth -= damageAmount;
+            Actions.onTakeDamage(damageAmount);
+            
+        }
+        if (currentHealth - damageAmount <= 0)
+        {
+            isDead = true;
+            Die();
+        }
+
+    }
+
+    private void Die()
+    {
+        Debug.LogError("Dead");
+        //Destroy(gameObject); particle sfx etc.
+    }
+
+    public float GetCurrentHealthAmount()
+    {
+        return currentHealth;
+    }
 }
+ 

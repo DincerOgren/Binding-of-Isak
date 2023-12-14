@@ -7,7 +7,9 @@ public class PlayerStatsManager : MonoBehaviour
     public static PlayerStatsManager instance;
     [SerializeField] float healthAmount;
     [SerializeField] float fireRate;
-    
+
+
+    public bool updateHealth = false;
     private void Awake()
     {
         if (instance == null)
@@ -23,8 +25,16 @@ public class PlayerStatsManager : MonoBehaviour
     public void IncreaseHealth(int value = 1)
     {
         healthAmount += value;
+        Actions.onHearthAmountUpgraded.Invoke(value);
     }
-
+    private void Update()
+    {
+        if (updateHealth)
+        {
+            updateHealth = false;
+            IncreaseHealth();
+        }
+    }
     public float GetHealthAmount()
     {
         return healthAmount;
