@@ -7,10 +7,10 @@ public class Health : MonoBehaviour
 {
     [SerializeField] float healthAmount=1;
 
+    [Header("For Player")]
     public Sprite hearthImage;
     public Sprite halfHearthImage;
     public Sprite emptyHearthImage;
-
 
     private bool isDead = false;
 
@@ -23,6 +23,17 @@ public class Health : MonoBehaviour
 
     private float currentHealth;
 
+
+    private void OnEnable()
+    {
+        Actions.onHearthAmountUpgraded += RegenHealthWhenHPUp;
+    }
+
+    private void OnDisable()
+    {
+        Actions.onHearthAmountUpgraded-= RegenHealthWhenHPUp;
+
+    }
     private void Start()
     {
         if (this.CompareTag("Player"))
@@ -49,11 +60,12 @@ public class Health : MonoBehaviour
         if (!isDead)
         {
 
-            currentHealth -= damageAmount;
+            currentHealth = Mathf.Max(currentHealth - damageAmount,0);
             Actions.onTakeDamage(damageAmount);
             
         }
-        if (currentHealth - damageAmount <= 0)
+
+        if (currentHealth <= 0)
         {
             isDead = true;
             Die();
@@ -67,6 +79,15 @@ public class Health : MonoBehaviour
         //Destroy(gameObject); particle sfx etc.
     }
 
+    private void RegenHealthWhenHPUp(float v)
+    {
+        healthAmount += v;
+        RegenHealth(PlayerStatsManager.instance.GetHPUpRegenAmount());
+    }
+    private void RegenHealth(float value)
+    {
+        currentHealth = Mathf.Min(currentHealth + value, healthAmount);
+    }
     public float GetCurrentHealthAmount()
     {
         return currentHealth;

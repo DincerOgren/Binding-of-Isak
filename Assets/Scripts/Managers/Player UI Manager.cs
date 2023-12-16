@@ -25,8 +25,7 @@ public class PlayerUIManager : MonoBehaviour
     {
         healthAmount = PlayerStatsManager.instance.GetHealthAmount();
         currentHealthAmount = healthAmount;
-        SpawnHearthUI();
-
+        StartCoroutine(SpawnHearthUI());
         DontDestroyOnLoad(gameObject);
     }
 
@@ -45,9 +44,9 @@ public class PlayerUIManager : MonoBehaviour
     private void UpdateHeartsAmount(float value)
     {
         healthAmount += value;
+        currentHealthAmount = Mathf.Min(currentHealthAmount + PlayerStatsManager.instance.GetHPUpRegenAmount(), healthAmount);
 
-        SpawnHearthUI();      
-
+        StartCoroutine(SpawnHearthUI());
     }
 
     public void UpdateCurrentHealth(float value)
@@ -57,6 +56,25 @@ public class PlayerUIManager : MonoBehaviour
         AdjustHearthImages();
     }
 
+    private IEnumerator SpawnHearthUI()
+    {
+        // YOU CAN UPDATE THIS METHOD FOR VISUALLY PREFECT
+        // PLAYER CAN SEE THE CHANGES IN THE ONE FRAME
+        foreach (Transform childTransform in hearthContainer.transform)
+        {
+            Destroy(childTransform.gameObject);
+        }
+
+        yield return null;
+
+        for (int i = 0; i < healthAmount; i++)
+        {
+            Instantiate(hearthUIPrefab, hearthContainer.transform);
+        }
+
+        AdjustHearthImages();
+
+    }
 
     void AdjustHearthImages()
     {
@@ -71,17 +89,30 @@ public class PlayerUIManager : MonoBehaviour
 
             if (tempCurr - 1 >= 0)
             {
-                print("fullhearth girildi value= " + tempCurr + " i value= " + i);
-                hearthContainer.transform.GetChild(i).GetComponent<Image>().sprite = fullHearthUISprite;
+                print("if girildi value= " + tempCurr + " i value= " + i);
+
+                if (hearthContainer.transform.GetChild(i).TryGetComponent<Image>(out Image imgComp))
+                {
+                    imgComp.sprite = fullHearthUISprite;
+                    print("if degistirdi resim + i =" + imgComp.name);
+                }
+                else
+                    print("image component not found ++ if");
                 tempCurr -= 1;
                 i++;
                 continue;
             }
-            else if (tempCurr - .5 == 0)
+            else if (tempCurr - .5 >= 0)
             {
                 print("elif girildi value= " + tempCurr + " i value= " + i);
 
-                hearthContainer.transform.GetChild(i).GetComponent<Image>().sprite = halfHearthUISprite;
+                if(hearthContainer.transform.GetChild(i).TryGetComponent<Image>(out Image imgComp))
+                {
+                    imgComp.sprite = halfHearthUISprite;
+                    print("elif degistirdi resim + i =" + imgComp.name);
+                }
+                else
+                    print("image component not found ++ elif");
                 tempCurr -= .5f;
                 i++;
                 continue;
@@ -90,22 +121,18 @@ public class PlayerUIManager : MonoBehaviour
             {
                 print("ese girildi value= " + tempCurr+ " i value= "+i);
 
-                hearthContainer.transform.GetChild(i).GetComponent<Image>().sprite = emptyHearthUISprite;
+                if (hearthContainer.transform.GetChild(i).TryGetComponent<Image>(out Image imgComp))
+                {
+                    imgComp.sprite = emptyHearthUISprite;
+                    print("else degistirdi resim + i =" + imgComp.name);
+                }
+                else
+                    print("image component not found ++ else");
                 i++;
             }
         }
 
     }
-    private void SpawnHearthUI()
-    {
-        foreach (Transform childTransform in hearthContainer.transform)
-        {
-            Destroy(childTransform.gameObject);
-        }
-        for (int i = 0; i < healthAmount; i++)
-        {
-            Instantiate(hearthUIPrefab, hearthContainer.transform);
-        }
-    }
+    
 
 }
