@@ -12,12 +12,12 @@ public class GridTest : MonoBehaviour
     public GameObject obje;
     public Grid grid;
     public int xLen, yLen, cellSize;
-
+    [SerializeField] Transform floorParent;
 
     public GameObject[] walkableFloorPrefabs;
     public GameObject[] obstacleFloorPrefabs;
 
-    
+
     private void Awake()
     {
         instance = this;
@@ -27,19 +27,28 @@ public class GridTest : MonoBehaviour
     {
 
         grid = new Grid(xLen, yLen, cellSize, transform);
+        StartCoroutine(SpawnRandomFloors());
 
+    }
+
+    IEnumerator SpawnRandomFloors()
+    {
+        foreach (Transform item in floorParent)
+        {
+            Destroy(item.gameObject);
+        }
+        yield return null;
         foreach (var item in grid.GetGridArray())
         {
-            if (item.value==1)
+            if (item.value == 1)
             {
-                Instantiate(obstacleFloorPrefabs[UnityEngine.Random.Range(0, obstacleFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0));
+                Instantiate(obstacleFloorPrefabs[UnityEngine.Random.Range(0, obstacleFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0), floorParent);
             }
-            else if (item.value==0)
+            else if (item.value == 0)
             {
-                Instantiate(walkableFloorPrefabs[UnityEngine.Random.Range(0, walkableFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0));
+                Instantiate(walkableFloorPrefabs[UnityEngine.Random.Range(0, walkableFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0), floorParent);
             }
         }
-
     }
 
     // Update is called once per frame
@@ -56,11 +65,15 @@ public class GridTest : MonoBehaviour
         //}
         //DrawCube(Vector3.zero, new Vector3(grid.GetCellLength(), grid.GetCellHeight()));
 
-        
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            grid.RandomizeNodesValues();
+            StartCoroutine(SpawnRandomFloors());
+        }
         obje.transform.position = UtilsClass.GetMouseWorldPosition();
     }
 
-    
+
 
     private void DrawCbe(Vector3 startPos, float size)
     {
@@ -77,10 +90,10 @@ public class GridTest : MonoBehaviour
     public void UpdateGText(GridNode node)
     {
         Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Fcost = " + node.fCost);
-        grid.textArray[node.number.x,node.number.y].text = node.value.ToString("F1");
+        grid.textArray[node.number.x, node.number.y].text = node.value.ToString("F1");
     }
 
-    public void UpdateText(int x,int y,string context)
+    public void UpdateText(int x, int y, string context)
     {
         grid.textArray[x, y].text = context;
     }
@@ -105,7 +118,7 @@ public class GridTest : MonoBehaviour
             Debug.Log("Grid[" + temp.number.x + "," + temp.number.y + "]");
             temp = temp.parent;
         }
-        
+
     }
     private void OnDrawGizmos()
     {

@@ -162,13 +162,18 @@ public class Grid
         textMeshPro.alignment = TextAlignmentOptions.Center;
         return textMeshPro;
     }
-
+    public void RandomizeNodesValues()
+    {
+        foreach (var item in gridArray)
+        {
+            item.value = Random.Range(0, 2);
+        }
+    }
     public Vector3 GetCenterPoint(GridNode node)
     {
-        var a = GetWorldPosition(node.number.x, node.number.y);
-        var b = a + new Vector3(cellSize / 2, cellSize / 2, 0);
-        Debug.Log("World Pos = " + a+ " Center Point = " + b);
-        return b;
+        var a = new Vector3((node.number.x + 0.5f) * cellSize, (node.number.y + 0.5f) * cellSize, 0) + gridStartPosition;
+        Debug.Log("World Pos = " + a);
+        return a;
 
     }
 
