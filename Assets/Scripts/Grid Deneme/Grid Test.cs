@@ -14,6 +14,9 @@ public class GridTest : MonoBehaviour
     public int xLen, yLen, cellSize;
 
 
+    public GameObject[] walkableFloorPrefabs;
+    public GameObject[] obstacleFloorPrefabs;
+
     
     private void Awake()
     {
@@ -24,6 +27,18 @@ public class GridTest : MonoBehaviour
     {
 
         grid = new Grid(xLen, yLen, cellSize, transform);
+
+        foreach (var item in grid.GetGridArray())
+        {
+            if (item.value==1)
+            {
+                Instantiate(obstacleFloorPrefabs[UnityEngine.Random.Range(0, obstacleFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0));
+            }
+            else if (item.value==0)
+            {
+                Instantiate(walkableFloorPrefabs[UnityEngine.Random.Range(0, walkableFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0));
+            }
+        }
 
     }
 
@@ -62,7 +77,7 @@ public class GridTest : MonoBehaviour
     public void UpdateGText(GridNode node)
     {
         Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Fcost = " + node.fCost);
-        grid.textArray[node.number.x,node.number.y].text = node.fCost.ToString("F1");
+        grid.textArray[node.number.x,node.number.y].text = node.value.ToString("F1");
     }
 
     public void UpdateText(int x,int y,string context)

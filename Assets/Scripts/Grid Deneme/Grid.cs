@@ -31,7 +31,8 @@ public class Grid
                 {
                     fCost = 0,
                     hCost = 0,
-                    gCost = 0
+                    gCost = 0,
+                    value = Random.Range(0, 2)
                 };
                 gridArray[x, y] = temp;
                 // gridArray[x, y].number = new Vector2Int(x, y);
@@ -164,7 +165,10 @@ public class Grid
 
     public Vector3 GetCenterPoint(GridNode node)
     {
-        return GetWorldPosition(node.number.x,node.number.y);
+        var a = GetWorldPosition(node.number.x, node.number.y);
+        var b = a + new Vector3(cellSize / 2, cellSize / 2, 0);
+        Debug.Log("World Pos = " + a+ " Center Point = " + b);
+        return b;
 
     }
 
@@ -174,6 +178,7 @@ public class Grid
 public class GridNode
 {
     public Vector2Int number;
+    public int value;
     public float hCost;
     public float gCost;
     public float fCost;
