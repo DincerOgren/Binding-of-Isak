@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -13,6 +14,7 @@ public class GridTest : MonoBehaviour
     public Grid grid;
     public int xLen, yLen, cellSize;
     [SerializeField] Transform floorParent;
+    [SerializeField] Transform roomVisual;
 
     public GameObject[] walkableFloorPrefabs;
     public GameObject[] obstacleFloorPrefabs;
@@ -26,8 +28,35 @@ public class GridTest : MonoBehaviour
     void Start()
     {
 
-        grid = new Grid(xLen, yLen, cellSize, transform);
-        StartCoroutine(SpawnRandomFloors());
+        grid = new Grid(xLen, yLen, cellSize, roomVisual);
+        AdjustGridValues();
+        //StartCoroutine(SpawnRandomFloors());
+
+    }
+
+    public void AdjustGridValues()
+    {
+        foreach (Transform childTransform in floorParent.transform)
+        {
+            
+            if (childTransform.TryGetComponent<Floor>(out var child))
+            {
+                if (child.IsWalkable())
+                {
+                    GridNode node = grid.GetGridNumber(child.transform.position);
+                    node.value = 0;
+                    UpdateValueText(node);
+                    child.SetRandomSpriteForFloor();
+                }
+                else
+                {
+                    GridNode node = grid.GetGridNumber(child.transform.position);
+                    node.value = 1;
+                    UpdateValueText(node);
+                    child.SetRandomSpriteForFloor();
+                }
+            }
+        }
 
     }
 
@@ -64,6 +93,11 @@ public class GridTest : MonoBehaviour
         //    }
         //}
         //DrawCube(Vector3.zero, new Vector3(grid.GetCellLength(), grid.GetCellHeight()));
+        if (Input.GetMouseButton(0))
+        {
+            var node = grid.GetGridNumber(UtilsClass.GetMouseWorldPosition());
+            print("Grid [" +node.number.x+","+node.number.y+"] , value = "+node.value);
+        }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -91,6 +125,11 @@ public class GridTest : MonoBehaviour
     {
         Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Fcost = " + node.fCost);
         grid.textArray[node.number.x, node.number.y].text = node.value.ToString("F1");
+    }
+    public void UpdateValueText(GridNode node)
+    {
+        //Debug.Log("Updated node[" + node.number.x + ", " + node.number.y + "] , Fcost = " + node.fCost);
+        grid.textArray[node.number.x, node.number.y].text = node.value.ToString();
     }
 
     public void UpdateText(int x, int y, string context)
