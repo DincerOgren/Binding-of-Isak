@@ -15,6 +15,7 @@ public class FloorManager : MonoBehaviour
 
     public bool useSeed = false;
 
+    public CornerSprites cornerSprites;
 
     public WeightedRandomSelector<WeigthedSprite> obstacleSelector = new WeightedRandomSelector<WeigthedSprite>(true);
     
@@ -84,4 +85,18 @@ public class WeigthedSprite
 {
     public Sprite sprite { get; set; }
     public float weight { get; set; }
+}
+
+[System.Serializable]
+public class CornerSprites
+{
+    public Sprite topLeft;
+    public Sprite topRight; 
+    public Sprite bottomLeft;
+    public Sprite bottomRight;
+    public Sprite[] bottomLine;
+    public Sprite[] topLine;
+    public Sprite[] leftLine;
+    public Sprite[] rightLine;
+
 }

@@ -95,7 +95,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638385392272167568
+  platformSettingsDirtyTick: 638387933212604144
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -160,7 +160,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: tileset deneme_1
+  - name: top_1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -180,7 +180,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: tileset deneme_2
+  - name: top_2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -440,7 +440,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: tileset deneme_15
+  - name: bottom_1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -460,7 +460,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: tileset deneme_16
+  - name: bottom_2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0

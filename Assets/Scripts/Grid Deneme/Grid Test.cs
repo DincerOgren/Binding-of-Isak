@@ -38,15 +38,67 @@ public class GridTest : MonoBehaviour
     {
         foreach (Transform childTransform in floorParent.transform)
         {
-            
+
             if (childTransform.TryGetComponent<Floor>(out var child))
             {
                 if (child.IsWalkable())
                 {
                     GridNode node = grid.GetGridNumber(child.transform.position);
                     node.value = 0;
+                    //FOR CORNERS
+                    if (node.number == new Vector2(xLen-1, 0))
+                    {
+                        //BOTTOM RIGHT
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.bottomRight;
+                    }
+                    else if (node.number == new Vector2(xLen - 1, yLen-1))
+                    {
+                        //TOP RIGHT
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.topRight;
+
+                    }
+                    else if (node.number == new Vector2(0, yLen - 1))
+                    {
+                        //TOP LEFT
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.topLeft;
+
+                    }
+                    else if (node.number == new Vector2(0, 0))
+                    {
+                        //BOTTOM LEFT
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.bottomLeft;
+
+                    }
+                    //FOR TOP BETWEEN
+                    else if (node.number.y == yLen - 1)
+                    {
+                        //TOP LINE
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.topLine[UnityEngine.Random.Range(0, FloorManager.instance.cornerSprites.topLine.Length)];
+
+
+                    }
+                    else if (node.number.y == 0)
+                    {
+                        //BOTTOM LINE
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.bottomLine[UnityEngine.Random.Range(0, FloorManager.instance.cornerSprites.bottomLine.Length)];
+
+                    }
+                    else if (node.number.x == 0)
+                    {
+                        //LEFT LINE
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.leftLine[UnityEngine.Random.Range(0, FloorManager.instance.cornerSprites.leftLine.Length)];
+
+                    }
+                    else if (node.number.x == xLen - 1)
+                    {
+                        //RIGHT LINE
+                        child.GetComponent<SpriteRenderer>().sprite = FloorManager.instance.cornerSprites.rightLine[UnityEngine.Random.Range(0, FloorManager.instance.cornerSprites.rightLine.Length)];
+
+                    }
+                    else 
+                        child.SetRandomSpriteForFloor();
+
                     UpdateValueText(node);
-                    child.SetRandomSpriteForFloor();
                 }
                 else
                 {
@@ -58,8 +110,10 @@ public class GridTest : MonoBehaviour
             }
         }
 
+
     }
 
+   
     IEnumerator SpawnRandomFloors()
     {
         foreach (Transform item in floorParent)
@@ -96,7 +150,7 @@ public class GridTest : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             var node = grid.GetGridNumber(UtilsClass.GetMouseWorldPosition());
-            print("Grid [" +node.number.x+","+node.number.y+"] , value = "+node.value);
+            print("Grid [" + node.number.x + "," + node.number.y + "] , value = " + node.value);
         }
 
         if (Input.GetKeyDown(KeyCode.L))
