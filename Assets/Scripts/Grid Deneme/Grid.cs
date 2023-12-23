@@ -14,7 +14,7 @@ public class Grid
     GridNode[,] gridArray;
     int cellSize;
     public TextMeshPro[,] textArray;
-    public Grid(int xLen, int yLen, int cellSize, Transform transform)
+    public Grid(int xLen, int yLen, int cellSize, Transform transform, bool spawnTexts = true)
     {
         gridStartPosition = CalculateStartPosForThisObject(transform);
         xLength = xLen;
@@ -22,12 +22,16 @@ public class Grid
         this.cellSize = cellSize;
 
         gridArray = new GridNode[xLen, yLen];
-        textArray = new TextMeshPro[xLen, yLen];
+        if (spawnTexts)
+        {
+            textArray = new TextMeshPro[xLen, yLen];
+
+        }
         for (int x = 0; x < gridArray.GetLength(0); x++)
         {
             for (int y = 0; y < gridArray.GetLength(1); y++)
             {
-                GridNode temp = new GridNode(x, y)
+                GridNode temp = new(x, y)
                 {
                     fCost = 0,
                     hCost = 0,
@@ -38,7 +42,10 @@ public class Grid
                 // gridArray[x, y].number = new Vector2Int(x, y);
                 //gridArray[x, y].number.x = x;
                 //gridArray[x, y].number.y = y; 
-                textArray[x, y] = CreateWorldText(gridArray[x, y].value.ToString(), GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * .5f, 5, Color.white);
+                if (spawnTexts)
+                {
+                    textArray[x, y] = CreateWorldText(gridArray[x, y].value.ToString(), GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * .5f, 5, Color.white);
+                }
                 DrawCube(gridStartPosition + (cellSize * x * Vector3.right) + (cellSize * y * Vector3.up), cellSize);
             }
         }
@@ -112,7 +119,7 @@ public class Grid
         GetXY(worldPos, out int x, out int y);
         //Debug.LogWarning("Grid [" + x + "," + y + "]");
 
-        if (x<0||y<0 ||x>=xLength || y>=yLength)
+        if (x < 0 || y < 0 || x >= xLength || y >= yLength)
         {
             return null;
         }
@@ -125,7 +132,7 @@ public class Grid
         List<GridNode> tempList = new List<GridNode>();
         int x = node.number.x;
         int y = node.number.y;
-        Debug.LogError("x= "+x+" y = "+y);
+        Debug.LogError("x= " + x + " y = " + y);
         if (y + 1 >= 0 && y + 1 < yLength) tempList.Add(FindNode(x, y + 1));
         if (x + 1 >= 0 && y + 1 >= 0 && x + 1 < xLength && y + 1 < yLength) tempList.Add(FindNode(x + 1, y + 1));
         if (x + 1 >= 0 && x + 1 < yLength) tempList.Add(FindNode(x + 1, y));
@@ -145,9 +152,9 @@ public class Grid
         return gridArray[x, y];
     }
 
-    public void FindObject(Transform parent,Vector2 loc)
+    public void FindObject(Transform parent, Vector2 loc)
     {
-        
+
     }
     public TextMeshPro CreateWorldText(string textContent, Vector3 position, int fontSize, Color color)
     {
