@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] int goldCount = 0;
     [SerializeField] int bombCount = 0;
-
+    [SerializeField] int maxGoldCount = 99;
+    [SerializeField] int maxBombCount = 99;
 
     public bool bomb = false;
     public bool gold = false;
@@ -25,15 +26,21 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-         if (bomb) { bomb = false; AddBomb(); }
-         if (gold) { gold = false; AddGold(); }
+        if (bomb) { bomb = false; AddBomb(); }
+        if (gold) { gold = false; AddGold(); }
     }
 
 
     public int GetBombAmount() => bombCount;
     public int GetGoldAmount() => goldCount;
 
-    public void AddGold(int amount = 1) => goldCount += amount;
-    public void AddBomb(int amount = 1) => bombCount += amount;
+    public void AddGold(int amount = 1)
+    {
+        if (goldCount < maxGoldCount)
+        {
+            goldCount += amount;
+        }
+    }
+    public void AddBomb(int amount = 1) { if(bombCount<maxBombCount) bombCount += amount; }
 
 }

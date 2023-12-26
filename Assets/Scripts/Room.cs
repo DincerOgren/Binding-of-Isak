@@ -13,6 +13,7 @@ public class Room : MonoBehaviour
 
     public RoomLinks attachedRooms;
 
+    public int distanceToStarterRoom = 0;
 
 
 
