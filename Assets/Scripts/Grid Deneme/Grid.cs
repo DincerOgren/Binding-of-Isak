@@ -179,9 +179,16 @@ public class Grid
             item.value = Random.Range(0, 2);
         }
     }
-    public Vector3 GetCenterPoint(GridNode node)
+    public Vector3 GetCenterPointNode(GridNode node)
     {
         var a = new Vector3((node.number.x + 0.5f) * cellSize, (node.number.y + 0.5f) * cellSize, 0) + gridStartPosition;
+        Debug.Log("World Pos = " + a);
+        return a;
+
+    }
+    public Vector3 GetCenterPoint(int x, int y)
+    {
+        var a = new Vector3((x + 0.5f) * cellSize, (y + 0.5f) * cellSize, 0) + gridStartPosition;
         Debug.Log("World Pos = " + a);
         return a;
 

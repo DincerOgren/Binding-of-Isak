@@ -125,11 +125,11 @@ public class GridTest : MonoBehaviour
         {
             if (item.value == 1)
             {
-                Instantiate(obstacleFloorPrefabs[UnityEngine.Random.Range(0, obstacleFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0), floorParent);
+                Instantiate(obstacleFloorPrefabs[UnityEngine.Random.Range(0, obstacleFloorPrefabs.Length)], grid.GetCenterPointNode(item), Quaternion.Euler(0, 0, 0), floorParent);
             }
             else if (item.value == 0)
             {
-                Instantiate(walkableFloorPrefabs[UnityEngine.Random.Range(0, walkableFloorPrefabs.Length)], grid.GetCenterPoint(item), Quaternion.Euler(0, 0, 0), floorParent);
+                Instantiate(walkableFloorPrefabs[UnityEngine.Random.Range(0, walkableFloorPrefabs.Length)], grid.GetCenterPointNode(item), Quaternion.Euler(0, 0, 0), floorParent);
             }
         }
     }
