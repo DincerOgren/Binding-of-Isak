@@ -26,9 +26,11 @@ public class RoomGenerator : MonoBehaviour
     public List<Room> rooms = new();
     public Room bossRoom;
     public Vector2Int centerPoint;
+
+    public Room tempRoom;
     private void Start()
     {
-        levelGrid = new Grid(levelGridX, levelGridY, cellSize, visual,false);
+        levelGrid = new Grid(levelGridX, levelGridY, cellSize, visual, false);
     }
 
     private void Update()
@@ -69,7 +71,7 @@ public class RoomGenerator : MonoBehaviour
     private IEnumerator SpawnRooms()
     {
         SpawnStarterRoom();
-        for (int i = 0; i < desiredRoomAmount*2;)
+        for (int i = 0; i < desiredRoomAmount * 2;)
         {
             if (stepByStep)
             {
@@ -78,7 +80,7 @@ public class RoomGenerator : MonoBehaviour
                     Debug.Log("i passed the spawned rooms count, Process Completed");
                     break;
                 }
-                //stepByStep = false;
+                stepByStep = false;
                 print(i + "= i    , spanwedRooms.COunt= " + spawnedMultiLinkedRooms.Count);
                 if (spawnedMultiLinkedRooms[i].links.right && spawnedMultiLinkedRooms[i].attachedRooms.right == null)
                 {
@@ -103,28 +105,84 @@ public class RoomGenerator : MonoBehaviour
                     }
                     if (room != null)
                     {
-                        var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y) , Quaternion.identity);
-                        spawnedMultiLinkedRooms[i].attachedRooms.right = spawnedRoom;
-                        spawnedRoom.attachedRooms.left = spawnedMultiLinkedRooms[i];
-                        spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x + 1;
-                        spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y;
-                        spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
-                        rooms.Add(spawnedRoom);
+                        if (IsThereRoom(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y, out Room alreadyExsistedRoom))
+                        {
+                            Debug.LogError("ASDFSADFSADF" + alreadyExsistedRoom.name);
+                            alreadyExsistedRoom.links.left = true;
+                            currentRoomAmount--;
+                            int h = 0;
+                            tempRoom = null;
+                            while (true)
+                            {
+                                tempRoom = GetRandomLeftRoom();
+                                //sýnýr koymak lazzým
+                                if (tempRoom.links == alreadyExsistedRoom.links)
+                                {
+                                    print("Found room on right link replace");
+                                    break;
+                                }
+                                if (h > maxTry)
+                                {
+                                    tempRoom = null;
+                                    print("Over max try in down link i=" + i + " ,j= " + j);
 
-                        if (bossRoom.distanceToStartRoom<spawnedRoom.distanceToStartRoom)
-                        {
-                            bossRoom = spawnedRoom;
-                        }
-                        print("Spawned room on right link");
-                        CheckLinkedRooms(spawnedRoom);
-                        if (CheckRoomAmount(spawnedRoom) >= 1)
-                        {
-                            print("Added right link to spawnedRooms list");
-                            spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                    break;
+                                }
+                                h++;
+                            }
+                            if (tempRoom != null)
+                            {
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                                spawnedMultiLinkedRooms[i].attachedRooms.right = spawnedRoom;
+                                spawnedRoom.attachedRooms.left = spawnedMultiLinkedRooms[i];
+                                spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x + 1;
+                                spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y;
+                                spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                                if (!rooms.Contains(spawnedRoom)) { rooms.Add(spawnedRoom); }
+                                if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                                {
+                                    bossRoom = spawnedRoom;
+                                }
+                                print("Spawned room on right link");
+                                CheckLinkedRooms(spawnedRoom);
+                                if (CheckRoomAmount(spawnedRoom) >= 1)
+                                {
+                                    print("Added right link to spawnedRooms list");
+                                    spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                }
+                                else
+                                {
+                                    print("Cant add right link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                                }
+                            }
                         }
                         else
                         {
-                            print("Cant add right link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            Destroy(alreadyExsistedRoom);
+
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                            spawnedMultiLinkedRooms[i].attachedRooms.right = spawnedRoom;
+                            spawnedRoom.attachedRooms.left = spawnedMultiLinkedRooms[i];
+                            spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x + 1;
+                            spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y;
+                            spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                            if (!rooms.Contains(spawnedRoom)) { rooms.Add(spawnedRoom); }
+
+                            if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                            {
+                                bossRoom = spawnedRoom;
+                            }
+                            print("Spawned room on right link");
+                            CheckLinkedRooms(spawnedRoom);
+                            if (CheckRoomAmount(spawnedRoom) >= 1)
+                            {
+                                print("Added right link to spawnedRooms list");
+                                spawnedMultiLinkedRooms.Add(spawnedRoom);
+                            }
+                            else
+                            {
+                                print("Cant add right link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            }
                         }
                     }
                     else
@@ -160,30 +218,90 @@ public class RoomGenerator : MonoBehaviour
                     }
                     if (room != null)
                     {
-
-                        var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x-1, spawnedMultiLinkedRooms[i].number.y ), Quaternion.identity);
-                        spawnedMultiLinkedRooms[i].attachedRooms.left = spawnedRoom;
-                        spawnedRoom.attachedRooms.right = spawnedMultiLinkedRooms[i];
-                        spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x - 1;
-                        spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y;
-                        spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
-                        rooms.Add(spawnedRoom);
-
-                        if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                        if (IsThereRoom(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y, out Room alreadyExsistedRoom))
                         {
-                            bossRoom = spawnedRoom;
-                        }
-                        print("Spawned room on left link");
+                            Debug.LogError("ASDFSADFSADF " + alreadyExsistedRoom.name);
+                            alreadyExsistedRoom.links.right = true;
+                            currentRoomAmount--;
+                            int h = 0;
+                            tempRoom=null;
+                            while (true)
+                            {
+                                tempRoom = GetRandomRightRoom();
+                                print("Right = " + tempRoom.links.right + " Left= " + tempRoom.links.left + " Top= " + tempRoom.links.top + " Down= " + tempRoom.links.bottom);
+                                print("Exsisted Right = " + alreadyExsistedRoom.links.right + " Exsisted  Left= " + alreadyExsistedRoom.links.left + " Exsisted Top= " + alreadyExsistedRoom.links.top + " Exsisted  Down= " + alreadyExsistedRoom.links.bottom);
+                                //sýnýr koymak lazzým
+                                if (tempRoom.links.right == alreadyExsistedRoom.links.right && tempRoom.links.left == alreadyExsistedRoom.links.left &&
+                                    tempRoom.links.top == alreadyExsistedRoom.links.top && tempRoom.links.bottom == alreadyExsistedRoom.links.bottom)
+                                {
+                                    print("Found room on right link replace");
+                                    break;
+                                }
+                                if (h > maxTry)
+                                {
+                                    tempRoom = null;
+                                    print("Over max try in down link i=" + i + " ,j= " + j);
 
-                        CheckLinkedRooms(spawnedRoom);
-                        if (CheckRoomAmount(spawnedRoom) >= 1)
-                        {
-                            print("Added left link to spawnedRooms list");
-                            spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                    break;
+                                }
+                                h++;
+                            }
+                            if (tempRoom != null)
+                            {
+                                Destroy(alreadyExsistedRoom);
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                                spawnedMultiLinkedRooms[i].attachedRooms.left = spawnedRoom;
+                                spawnedRoom.attachedRooms.right = spawnedMultiLinkedRooms[i];
+                                spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x - 1;
+                                spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y;
+                                spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                                if (!rooms.Contains(spawnedRoom)) { rooms.Add(spawnedRoom); }
+                                if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                                {
+                                    bossRoom = spawnedRoom;
+                                }
+                                print("Spawned room on right link");
+                                CheckLinkedRooms(spawnedRoom);
+                                if (CheckRoomAmount(spawnedRoom) >= 1)
+                                {
+                                    print("Added right link to spawnedRooms list");
+                                    spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                }
+                                else
+                                {
+                                    print("Cant add right link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                                }
+                            }
                         }
                         else
                         {
-                            print("Cant add left link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                            spawnedMultiLinkedRooms[i].attachedRooms.left = spawnedRoom;
+                            spawnedRoom.attachedRooms.right = spawnedMultiLinkedRooms[i];
+                            spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x - 1;
+                            spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y;
+                            spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                            if (!rooms.Contains(spawnedRoom))
+                            {
+                                rooms.Add(spawnedRoom);
+                            }
+
+                            if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                            {
+                                bossRoom = spawnedRoom;
+                            }
+                            print("Spawned room on left link");
+
+                            CheckLinkedRooms(spawnedRoom);
+                            if (CheckRoomAmount(spawnedRoom) >= 1)
+                            {
+                                print("Added left link to spawnedRooms list");
+                                spawnedMultiLinkedRooms.Add(spawnedRoom);
+                            }
+                            else
+                            {
+                                print("Cant add left link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            }
                         }
                     }
                     else
@@ -219,30 +337,90 @@ public class RoomGenerator : MonoBehaviour
                     }
                     if (room != null)
                     {
-
-                        var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity);
-                        spawnedMultiLinkedRooms[i].attachedRooms.up = spawnedRoom;
-                        spawnedRoom.attachedRooms.down = spawnedMultiLinkedRooms[i];
-                        spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
-                        spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y + 1;
-                        spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
-                        rooms.Add(spawnedRoom);
-
-                        if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                        if (IsThereRoom(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1, out Room alreadyExsistedRoom))
                         {
-                            bossRoom = spawnedRoom;
-                        }
-                        print("Spawned room on up link");
+                            Debug.LogError("ASDFSADFSADF" + alreadyExsistedRoom.name);
+                            alreadyExsistedRoom.links.right = true;
+                            currentRoomAmount--;
+                            int h = 0;
+                            tempRoom = null;
+                            while (true)
+                            {
+                                tempRoom = GetRandomDownRoom();
+                                print("Right = " + tempRoom.links.right + " Left= " + tempRoom.links.left + " Top= " + tempRoom.links.top + " Down= " + tempRoom.links.bottom);
+                                print("Exsisted Right = " + alreadyExsistedRoom.links.right + " Exsisted  Left= " + alreadyExsistedRoom.links.left + " Exsisted Top= " + alreadyExsistedRoom.links.top + " Exsisted  Down= " + alreadyExsistedRoom.links.bottom);
+                                //sýnýr koymak lazzým
+                                if (tempRoom.links == alreadyExsistedRoom.links)
+                                {
+                                    print("Found room on right link replace");
+                                    break;
+                                }
+                                if (h > maxTry)
+                                {
+                                    tempRoom = null;
+                                    print("Over max try in down link i=" + i + " ,j= " + j);
 
-                        CheckLinkedRooms(spawnedRoom);
-                        if (CheckRoomAmount(spawnedRoom) >= 1)
-                        {
-                            print("Added up link to spawnedRooms list");
-                            spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                    break;
+                                }
+                                h++;
+                            }
+                            if (tempRoom != null)
+                            {
+                                Destroy(alreadyExsistedRoom);
+
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity);
+                                spawnedMultiLinkedRooms[i].attachedRooms.up = spawnedRoom;
+                                spawnedRoom.attachedRooms.down = spawnedMultiLinkedRooms[i];
+                                spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
+                                spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y + 1;
+                                spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                                if (!rooms.Contains(spawnedRoom)) { rooms.Add(spawnedRoom); }
+                                if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                                {
+                                    bossRoom = spawnedRoom;
+                                }
+                                print("Spawned room on right link");
+                                CheckLinkedRooms(spawnedRoom);
+                                if (CheckRoomAmount(spawnedRoom) >= 1)
+                                {
+                                    print("Added right link to spawnedRooms list");
+                                    spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                }
+                                else
+                                {
+                                    print("Cant add right link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                                }
+                            }
                         }
                         else
                         {
-                            print("Cant add up link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity);
+                            spawnedMultiLinkedRooms[i].attachedRooms.up = spawnedRoom;
+                            spawnedRoom.attachedRooms.down = spawnedMultiLinkedRooms[i];
+                            spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
+                            spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y + 1;
+                            spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                            if (!rooms.Contains(spawnedRoom))
+                            {
+                                rooms.Add(spawnedRoom);
+                            }
+
+                            if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                            {
+                                bossRoom = spawnedRoom;
+                            }
+                            print("Spawned room on up link");
+
+                            CheckLinkedRooms(spawnedRoom);
+                            if (CheckRoomAmount(spawnedRoom) >= 1)
+                            {
+                                print("Added up link to spawnedRooms list");
+                                spawnedMultiLinkedRooms.Add(spawnedRoom);
+                            }
+                            else
+                            {
+                                print("Cant add up link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            }
                         }
                     }
                     else
@@ -270,7 +448,7 @@ public class RoomGenerator : MonoBehaviour
                         {
                             room = null;
 
-                            print("Over max try in down link i=" + i+" ,j= "+j);
+                            print("Over max try in down link i=" + i + " ,j= " + j);
 
                             break;
                         }
@@ -278,30 +456,87 @@ public class RoomGenerator : MonoBehaviour
                     }
                     if (room != null)
                     {
-
-                        var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1) , Quaternion.identity);
-                        spawnedMultiLinkedRooms[i].attachedRooms.down = spawnedRoom;
-                        spawnedRoom.attachedRooms.up = spawnedMultiLinkedRooms[i];
-                        spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
-                        spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y - 1;
-                        spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
-                        rooms.Add(spawnedRoom);
-
-                        if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                        if (IsThereRoom(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1, out Room alreadyExsistedRoom))
                         {
-                            bossRoom = spawnedRoom;
-                        }
-                        print("Spawned room on down link");
+                            Debug.LogError("ASDFSADFSADF" + alreadyExsistedRoom.name);
+                            alreadyExsistedRoom.links.right = true;
+                            currentRoomAmount--;
+                            int h = 0;
+                            tempRoom = null;
+                            while (true)
+                            {
+                                tempRoom = GetRandomUpRoom();
+                                //sýnýr koymak lazzým
+                                if (tempRoom.links == alreadyExsistedRoom.links)
+                                {
+                                    print("Found room on right link replace");
+                                    break;
+                                }
+                                if (h > maxTry)
+                                {
+                                    tempRoom = null;
+                                    print("Over max try in down link i=" + i + " ,j= " + j);
 
-                        CheckLinkedRooms(spawnedRoom);
-                        if (CheckRoomAmount(spawnedRoom) >= 1)
-                        {
-                            print("Added down link to spawnedRooms list");
-                            spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                    break;
+                                }
+                                h++;
+                            }
+                            if (tempRoom != null)
+                            {
+                                Destroy(alreadyExsistedRoom);
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1), Quaternion.identity);
+                                spawnedMultiLinkedRooms[i].attachedRooms.down = spawnedRoom;
+                                spawnedRoom.attachedRooms.up = spawnedMultiLinkedRooms[i];
+                                spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
+                                spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y - 1;
+                                spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                                if (!rooms.Contains(spawnedRoom)) { rooms.Add(spawnedRoom); }
+                                if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                                {
+                                    bossRoom = spawnedRoom;
+                                }
+                                print("Spawned room on right link");
+                                CheckLinkedRooms(spawnedRoom);
+                                if (CheckRoomAmount(spawnedRoom) >= 1)
+                                {
+                                    print("Added right link to spawnedRooms list");
+                                    spawnedMultiLinkedRooms.Add(spawnedRoom);
+                                }
+                                else
+                                {
+                                    print("Cant add right link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                                }
+                            }
                         }
                         else
                         {
-                            print("Cant add down link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1), Quaternion.identity);
+                            spawnedMultiLinkedRooms[i].attachedRooms.down = spawnedRoom;
+                            spawnedRoom.attachedRooms.up = spawnedMultiLinkedRooms[i];
+                            spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
+                            spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y - 1;
+                            spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
+                            if (!rooms.Contains(spawnedRoom))
+                            {
+                                rooms.Add(spawnedRoom);
+                            }
+
+                            if (bossRoom.distanceToStartRoom < spawnedRoom.distanceToStartRoom)
+                            {
+                                bossRoom = spawnedRoom;
+                            }
+                            print("Spawned room on down link");
+
+                            CheckLinkedRooms(spawnedRoom);
+                            if (CheckRoomAmount(spawnedRoom) >= 1)
+                            {
+                                print("Added down link to spawnedRooms list");
+                                spawnedMultiLinkedRooms.Add(spawnedRoom);
+                            }
+                            else
+                            {
+                                print("Cant add down link to list links.linkedRooms = " + spawnedRoom.linkedRooms);
+                            }
                         }
                     }
                     else
@@ -311,14 +546,14 @@ public class RoomGenerator : MonoBehaviour
                     }
                 }
 
-               
+
 
                 i++;
             }
             else
                 yield return null;
         }
-       
+
 
     }
 
@@ -343,6 +578,20 @@ public class RoomGenerator : MonoBehaviour
         }
 
         return tempLinkRoom;
+    }
+
+    private bool IsThereRoom(int x, int y, out Room room)
+    {
+        foreach (var item in rooms)
+        {
+            if (item.number == new Vector2Int(x, y))
+            {
+                room = item;
+                return true;
+            }
+        }
+        room = null;
+        return false;
     }
 
     private void CheckLinkedRooms(Room room)
