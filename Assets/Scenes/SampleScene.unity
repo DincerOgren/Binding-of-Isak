@@ -7590,7 +7590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c4f7aa5edaa7fa41919ba6f4b1a4540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 5
+  level: 2
 --- !u!4 &602486621
 Transform:
   m_ObjectHideFlags: 0
@@ -8024,6 +8024,7 @@ MonoBehaviour:
   rooms: []
   bossRoom: {fileID: 0}
   centerPoint: {x: 0, y: 0}
+  tempRoom: {fileID: 0}
 --- !u!4 &621552028
 Transform:
   m_ObjectHideFlags: 0
