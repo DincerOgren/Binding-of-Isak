@@ -15,7 +15,7 @@ public class Health : MonoBehaviour
     private bool isDead = false;
 
 
-
+//FOR TEST PURPOSES
 
     public bool takeDamage = false;
 
@@ -54,7 +54,7 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damageAmount)      //instigator koyarsýn fonksiyona belki
+    public void TakeDamage(float damageAmount)      //instigator koyarsï¿½n fonksiyona belki
     {
 
         if (!isDead)
