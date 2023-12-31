@@ -36,6 +36,7 @@ public class RoomGenerator : MonoBehaviour
 
     private void Update()
     {
+        //test purposes
         if (spawnRooms)
         {
             spawnRooms = false;
@@ -55,15 +56,15 @@ public class RoomGenerator : MonoBehaviour
     {
         return new Vector2Int(Mathf.FloorToInt(gridNodes.GetLength(0) / 2f), Mathf.FloorToInt(gridNodes.GetLength(1) / 2f));
 
-        //// Eðer grid boyutlarý tek sayýdaysa, orta nokta
+        //// Eï¿½er grid boyutlarï¿½ tek sayï¿½daysa, orta nokta
         //if (gridWidth % 2 == 0)
         //{
-        //    centerX -= 1; // Önceki hücreyi seçmek için bir azaltma
+        //    centerX -= 1; // ï¿½nceki hï¿½creyi seï¿½mek iï¿½in bir azaltma
         //}
 
         //if (gridHeight % 2 == 0)
         //{
-        //    centerY -= 1; // Önceki hücreyi seçmek için bir azaltma
+        //    centerY -= 1; // ï¿½nceki hï¿½creyi seï¿½mek iï¿½in bir azaltma
         //}
 
 
