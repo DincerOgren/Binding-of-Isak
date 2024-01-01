@@ -18,13 +18,13 @@ public class GridTest : MonoBehaviour
 
     public GameObject[] walkableFloorPrefabs;
     public GameObject[] obstacleFloorPrefabs;
-
+//ss
 
     private void Awake()
     {
         instance = this;
     }
-    // Start is called before the first frame update
+ 
     void Start()
     {
 
