@@ -152,7 +152,7 @@ public class Grid
         return gridArray[x, y];
     }
 
-    public void FindObject(Transform parent, Vector2 loc)
+    /*public void FindObject(Transform parent, Vector2 loc)
     {
 
     }
@@ -171,14 +171,8 @@ public class Grid
         textMeshPro.color = color;
         textMeshPro.alignment = TextAlignmentOptions.Center;
         return textMeshPro;
-    }
-    public void RandomizeNodesValues()
-    {
-        foreach (var item in gridArray)
-        {
-            item.value = Random.Range(0, 2);
-        }
-    }
+    }*/
+    
     public Vector3 GetCenterPointNode(GridNode node)
     {
         var a = new Vector3((node.number.x + 0.5f) * cellSize, (node.number.y + 0.5f) * cellSize, 0) + gridStartPosition;
@@ -200,11 +194,6 @@ public class Grid
 public class GridNode
 {
     public Vector2Int number;
-    public int value;
-    public float hCost;
-    public float gCost;
-    public float fCost;
-    public GridNode parent = null;
     public GridNode(int x = 0, int y = 0)
     {
         number.x = x;
