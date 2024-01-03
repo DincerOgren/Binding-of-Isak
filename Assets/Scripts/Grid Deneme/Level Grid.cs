@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -152,7 +152,7 @@ public class Grid
         return gridArray[x, y];
     }
 
-    /*public void FindObject(Transform parent, Vector2 loc)
+    public void FindObject(Transform parent, Vector2 loc)
     {
 
     }
@@ -171,7 +171,7 @@ public class Grid
         textMeshPro.color = color;
         textMeshPro.alignment = TextAlignmentOptions.Center;
         return textMeshPro;
-    }*/
+    }
     
     public Vector3 GetCenterPointNode(GridNode node)
     {
@@ -202,5 +202,5 @@ public class GridNode
 
 }
 
-
+*/
 

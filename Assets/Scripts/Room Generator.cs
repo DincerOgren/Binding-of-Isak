@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class RoomGenerator : MonoBehaviour
     public Room bossRoom;
     public Vector2Int centerPoint;
 
-    public Room tempRoom;
+    public float resetTimer = 0f;
     private void Start()
     {
         levelGrid = new Grid(levelGridX, levelGridY, cellSize, visual, false);
@@ -43,6 +44,13 @@ public class RoomGenerator : MonoBehaviour
 
             CreateRooms();
         }
+
+        if (spawnRooms && resetTimer >= .5f)
+        {
+            spawnRooms = false;
+            StartCoroutine(SpawnRooms());
+        }
+        resetTimer += Time.deltaTime;
     }
 
     private void CreateRooms()
@@ -81,7 +89,7 @@ public class RoomGenerator : MonoBehaviour
                 {
 
                     StartCoroutine(DestroyAllRooms());
-
+                    resetTimer = 0f;
                     break;
                 }
                 else if (i >= spawnedMultiLinkedRooms.Count)
@@ -119,7 +127,7 @@ public class RoomGenerator : MonoBehaviour
                         {
                             Debug.LogError("ASDFSADFSADF" + alreadyExsistedRoom.name);
                             alreadyExsistedRoom.links.left = true;
-                            tempRoom = null;
+                            Room tempRoom = null;
 
                             foreach (var item in leftRoomPrefabs)
                             {
@@ -161,6 +169,7 @@ public class RoomGenerator : MonoBehaviour
                                 }
 
                                 Destroy(alreadyExsistedRoom.gameObject);
+                                print("Changed room on right link");
 
                             }
                         }
@@ -230,7 +239,7 @@ public class RoomGenerator : MonoBehaviour
                             Debug.LogError("ASDFSADFSADF " + alreadyExsistedRoom.name);
                             alreadyExsistedRoom.links.right = true;
 
-                            tempRoom = null;
+                            Room tempRoom = null;
                             foreach (var item in rightRoomPrefabs)
                             {
                                 if (item.links.right == alreadyExsistedRoom.links.right && item.links.left == alreadyExsistedRoom.links.left
@@ -249,7 +258,7 @@ public class RoomGenerator : MonoBehaviour
                             }
                             if (tempRoom != null)
                             {
-                               
+
 
                                 var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
                                 spawnedMultiLinkedRooms[i].attachedRooms.left = spawnedRoom;
@@ -270,6 +279,7 @@ public class RoomGenerator : MonoBehaviour
                                     spawnedMultiLinkedRooms.Insert(index, spawnedRoom);
                                 }
                                 Destroy(alreadyExsistedRoom.gameObject);
+                                print("Changed room on left link");
 
                             }
                         }
@@ -341,7 +351,7 @@ public class RoomGenerator : MonoBehaviour
                         {
                             Debug.LogError("ASDFSADFSADF" + alreadyExsistedRoom.name);
                             alreadyExsistedRoom.links.bottom = true;
-                            tempRoom = null;
+                            Room tempRoom = null;
                             foreach (var item in downRoomPrefabs)
                             {
                                 if (item.links.right == alreadyExsistedRoom.links.right && item.links.left == alreadyExsistedRoom.links.left
@@ -366,7 +376,7 @@ public class RoomGenerator : MonoBehaviour
                                 spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
                                 spawnedRoom.number.y = spawnedMultiLinkedRooms[i].number.y + 1;
                                 spawnedRoom.distanceToStartRoom = Vector2.Distance(centerPoint, spawnedRoom.number);
-                                
+
                                 if (rooms.Contains(alreadyExsistedRoom))
                                 {
                                     int index = rooms.IndexOf(alreadyExsistedRoom);
@@ -380,6 +390,7 @@ public class RoomGenerator : MonoBehaviour
                                     spawnedMultiLinkedRooms.Insert(index, spawnedRoom);
                                 }
                                 Destroy(alreadyExsistedRoom.gameObject);
+                                print("Changed room on up link");
 
                             }
                         }
@@ -451,7 +462,7 @@ public class RoomGenerator : MonoBehaviour
                         {
                             Debug.LogError("ASDFSADFSADF" + alreadyExsistedRoom.name);
                             alreadyExsistedRoom.links.top = true;
-                            tempRoom = null;
+                            Room tempRoom = null;
                             foreach (var item in upRoomPrefabs)
                             {
                                 if (item.links.right == alreadyExsistedRoom.links.right && item.links.left == alreadyExsistedRoom.links.left
@@ -490,7 +501,7 @@ public class RoomGenerator : MonoBehaviour
 
                                 Destroy(alreadyExsistedRoom.gameObject);
 
-                                print("Spawned room on right link");
+                                print("Changed room on down link");
 
                             }
                         }
@@ -565,7 +576,7 @@ public class RoomGenerator : MonoBehaviour
 
         yield return null;
 
-        spawnRooms = true;
+
     }
 
 
@@ -613,9 +624,9 @@ public class RoomGenerator : MonoBehaviour
         {
             tempLinkRoom--;
         }
-        else if(room.links.right)
+        else if (room.links.right)
         {
-            if (IsThereRoom(room.number.x+1, room.number.y, out _))
+            if (IsThereRoom(room.number.x + 1, room.number.y, out _))
             {
                 tempLinkRoom--;
             }
@@ -638,7 +649,7 @@ public class RoomGenerator : MonoBehaviour
         }
         else if (room.links.top)
         {
-            if (IsThereRoom(room.number.x, room.number.y+1, out _))
+            if (IsThereRoom(room.number.x, room.number.y + 1, out _))
             {
                 tempLinkRoom--;
             }
@@ -650,7 +661,7 @@ public class RoomGenerator : MonoBehaviour
         }
         else if (room.links.bottom)
         {
-            if (IsThereRoom(room.number.x, room.number.y-1, out _))
+            if (IsThereRoom(room.number.x, room.number.y - 1, out _))
             {
                 tempLinkRoom--;
             }
@@ -685,8 +696,20 @@ public class RoomGenerator : MonoBehaviour
 
         return room;
     }
-    private Room GetRandomRoom()
+    private Room GetRandomRoom(List<Room> item)
     {
+        //float randomValue = UnityEngine.Random.Range(0f, totalWeight);
+        //float cumulativeWeight = 0;
+
+        //for (int i = 0; i < items.Count; i++)
+        //{
+        //    cumulativeWeight += weights[i];
+        //    if (randomValue <= cumulativeWeight)
+        //    {
+        //        return items[i];
+        //    }
+        //}
+
         return allRoomPrefabs[UnityEngine.Random.Range(0, allRoomPrefabs.Count)];
     }
     private Room GetRandomLeftRoom()
