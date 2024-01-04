@@ -8018,13 +8018,13 @@ MonoBehaviour:
   desiredRoomAmount: 0
   currentRoomAmount: 0
   spawnRooms: 0
-  maxTry: 100
+  maxTry: 200
   stepByStep: 0
   spawnedMultiLinkedRooms: []
   rooms: []
   bossRoom: {fileID: 0}
   centerPoint: {x: 0, y: 0}
-  tempRoom: {fileID: 0}
+  resetTimer: 0
 --- !u!4 &621552028
 Transform:
   m_ObjectHideFlags: 0

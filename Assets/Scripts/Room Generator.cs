@@ -28,27 +28,33 @@ public class RoomGenerator : MonoBehaviour
     public List<Room> rooms = new();
     public Room bossRoom;
     public Vector2Int centerPoint;
-
+    public float totalWeight = 0;
     public float resetTimer = 0f;
     private void Start()
     {
         levelGrid = new Grid(levelGridX, levelGridY, cellSize, visual, false);
+
+        foreach (var item in allRoomPrefabs)
+        {
+            totalWeight += item.roomWeightForRandomization;
+        }
     }
 
     private void Update()
     {
-        //test purposes
-        if (spawnRooms)
-        {
-            spawnRooms = false;
-
-            CreateRooms();
-        }
+        
 
         if (spawnRooms && resetTimer >= .5f)
         {
             spawnRooms = false;
-            StartCoroutine(SpawnRooms());
+            CreateRooms();
+        }
+        //test purposes
+        else if (spawnRooms)
+        {
+            spawnRooms = false;
+
+            CreateRooms();
         }
         resetTimer += Time.deltaTime;
     }
@@ -90,6 +96,7 @@ public class RoomGenerator : MonoBehaviour
 
                     StartCoroutine(DestroyAllRooms());
                     resetTimer = 0f;
+                    desiredRoomAmount = 0;
                     break;
                 }
                 else if (i >= spawnedMultiLinkedRooms.Count)
@@ -106,7 +113,7 @@ public class RoomGenerator : MonoBehaviour
                     int j = 0;
                     while (true)
                     {
-                        room = GetRandomLeftRoom();
+                        room = GetRandomRoom(leftRoomPrefabs);//LEFT
                         if (room.links.left && room.linkedRooms - 1 + currentRoomAmount <= desiredRoomAmount)
                         {
                             print("Found room on right link");
@@ -214,7 +221,7 @@ public class RoomGenerator : MonoBehaviour
                     Room room;
                     while (true)
                     {
-                        room = GetRandomRightRoom();
+                        room = GetRandomRoom(rightRoomPrefabs);//RIGHT
                         if (room.links.right && room.linkedRooms - 1 + currentRoomAmount <= desiredRoomAmount)
                         {
                             print("Found room on left link");
@@ -329,7 +336,7 @@ public class RoomGenerator : MonoBehaviour
                     int j = 0;
                     while (true)
                     {
-                        room = GetRandomDownRoom();
+                        room = GetRandomRoom(downRoomPrefabs);//DOWN
                         if (room.links.bottom && room.linkedRooms - 1 + currentRoomAmount <= desiredRoomAmount)
                         {
                             print("Found room on up link");
@@ -439,7 +446,7 @@ public class RoomGenerator : MonoBehaviour
                     int j = 0;
                     while (true)
                     {
-                        room = GetRandomUpRoom();
+                        room = GetRandomRoom(upRoomPrefabs);//UP ROOM
                         if (room.links.top && room.linkedRooms - 1 + currentRoomAmount <= desiredRoomAmount)
                         {
                             print("Found room on down link");
@@ -696,19 +703,19 @@ public class RoomGenerator : MonoBehaviour
 
         return room;
     }
-    private Room GetRandomRoom(List<Room> item)
+    private Room GetRandomRoom(List<Room> items)
     {
-        //float randomValue = UnityEngine.Random.Range(0f, totalWeight);
-        //float cumulativeWeight = 0;
+        float randomValue = UnityEngine.Random.Range(0f, totalWeight);
+        float cumulativeWeight = 0;
 
-        //for (int i = 0; i < items.Count; i++)
-        //{
-        //    cumulativeWeight += weights[i];
-        //    if (randomValue <= cumulativeWeight)
-        //    {
-        //        return items[i];
-        //    }
-        //}
+        for (int i = 0; i < items.Count; i++)
+        {
+            cumulativeWeight += items[i].roomWeightForRandomization;
+            if (randomValue <= cumulativeWeight)
+            {
+                return items[i];
+            }
+        }
 
         return allRoomPrefabs[UnityEngine.Random.Range(0, allRoomPrefabs.Count)];
     }

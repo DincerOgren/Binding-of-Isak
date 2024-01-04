@@ -15,7 +15,7 @@ public class Room : MonoBehaviour
 
     public float distanceToStartRoom = 0;
 
-
+    public float roomWeightForRandomization = 1;
 
 
 
