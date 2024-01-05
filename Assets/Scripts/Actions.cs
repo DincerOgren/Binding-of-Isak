@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Actions
 {
-
+//ACTIONS
     public static Action<float> onTakeDamage;
     public static Action<float> onHearthAmountUpgraded;
 }
