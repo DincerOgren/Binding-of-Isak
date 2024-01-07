@@ -15,7 +15,7 @@ public class Health : MonoBehaviour
     private bool isDead = false;
 
 
-//FOR TEST PURPOSESS
+//FOR TEST PURPOSESS jpojpopoj
 
     public bool takeDamage = false;
 
