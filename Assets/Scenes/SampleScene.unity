@@ -8024,6 +8024,7 @@ MonoBehaviour:
   rooms: []
   bossRoom: {fileID: 0}
   centerPoint: {x: 0, y: 0}
+  totalWeight: 0
   resetTimer: 0
 --- !u!4 &621552028
 Transform:
