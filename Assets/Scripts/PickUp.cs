@@ -7,7 +7,7 @@ public class PickUp : MonoBehaviour
 {
     [SerializeField] PickupType pickUpType;
     [SerializeField] int pickupAmount = 1;
-
+//A
     private void Update()
     {
         if (pickUpType == PickupType.Bomb)
