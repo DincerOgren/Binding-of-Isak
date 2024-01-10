@@ -15,7 +15,7 @@ public class RoomGenerator : MonoBehaviour
     Grid levelGrid;
     //They should be odd
     public int levelGridX, levelGridY;
-
+    public Transform roomParent;
     public Transform visual;
     public int cellSize = 1;
     public int desiredRoomAmount = 0;
@@ -155,7 +155,7 @@ public class RoomGenerator : MonoBehaviour
                             if (tempRoom != null)
                             {
 
-                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity,roomParent);
                                 spawnedMultiLinkedRooms[i].attachedRooms.right = spawnedRoom;
                                 spawnedRoom.attachedRooms.left = spawnedMultiLinkedRooms[i];
                                 spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x + 1;
@@ -183,7 +183,7 @@ public class RoomGenerator : MonoBehaviour
                         else
                         {
 
-                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x + 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity,roomParent);
                             spawnedMultiLinkedRooms[i].attachedRooms.right = spawnedRoom;
                             spawnedRoom.attachedRooms.left = spawnedMultiLinkedRooms[i];
                             spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x + 1;
@@ -267,7 +267,7 @@ public class RoomGenerator : MonoBehaviour
                             {
 
 
-                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity,roomParent);
                                 spawnedMultiLinkedRooms[i].attachedRooms.left = spawnedRoom;
                                 spawnedRoom.attachedRooms.right = spawnedMultiLinkedRooms[i];
                                 spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x - 1;
@@ -292,7 +292,7 @@ public class RoomGenerator : MonoBehaviour
                         }
                         else
                         {
-                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x - 1, spawnedMultiLinkedRooms[i].number.y), Quaternion.identity, roomParent);
                             spawnedMultiLinkedRooms[i].attachedRooms.left = spawnedRoom;
                             spawnedRoom.attachedRooms.right = spawnedMultiLinkedRooms[i];
                             spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x - 1;
@@ -377,7 +377,7 @@ public class RoomGenerator : MonoBehaviour
                             if (tempRoom != null)
                             {
 
-                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity);
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity,roomParent);
                                 spawnedMultiLinkedRooms[i].attachedRooms.up = spawnedRoom;
                                 spawnedRoom.attachedRooms.down = spawnedMultiLinkedRooms[i];
                                 spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
@@ -403,7 +403,7 @@ public class RoomGenerator : MonoBehaviour
                         }
                         else
                         {
-                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y + 1), Quaternion.identity, roomParent);
                             spawnedMultiLinkedRooms[i].attachedRooms.up = spawnedRoom;
                             spawnedRoom.attachedRooms.down = spawnedMultiLinkedRooms[i];
                             spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
@@ -487,7 +487,7 @@ public class RoomGenerator : MonoBehaviour
                             }
                             if (tempRoom != null)
                             {
-                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1), Quaternion.identity);
+                                var spawnedRoom = Instantiate(tempRoom, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1), Quaternion.identity, roomParent);
                                 spawnedMultiLinkedRooms[i].attachedRooms.down = spawnedRoom;
                                 spawnedRoom.attachedRooms.up = spawnedMultiLinkedRooms[i];
                                 spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
@@ -514,7 +514,7 @@ public class RoomGenerator : MonoBehaviour
                         }
                         else
                         {
-                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1), Quaternion.identity);
+                            var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(spawnedMultiLinkedRooms[i].number.x, spawnedMultiLinkedRooms[i].number.y - 1), Quaternion.identity, roomParent);
                             spawnedMultiLinkedRooms[i].attachedRooms.down = spawnedRoom;
                             spawnedRoom.attachedRooms.up = spawnedMultiLinkedRooms[i];
                             spawnedRoom.number.x = spawnedMultiLinkedRooms[i].number.x;
@@ -680,7 +680,7 @@ public class RoomGenerator : MonoBehaviour
     private void SpawnStarterRoom()
     {
         var room = GetRandomStarterRoom();
-        var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(centerPoint.x, centerPoint.y), Quaternion.identity);
+        var spawnedRoom = Instantiate(room, levelGrid.GetCenterPoint(centerPoint.x, centerPoint.y), Quaternion.identity, roomParent);
         currentRoomAmount += spawnedRoom.linkedRooms + 1;
         spawnedRoom.number = centerPoint;
         spawnedMultiLinkedRooms.Add(spawnedRoom);

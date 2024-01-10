@@ -110,4 +110,4 @@ MonoBehaviour:
     up: {fileID: 0}
     down: {fileID: 0}
   distanceToStartRoom: 0
-  roomWeightForRandomization: 5
+  roomWeightForRandomization: 15

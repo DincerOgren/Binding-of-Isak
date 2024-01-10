@@ -95,7 +95,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638387955921097639
+  platformSettingsDirtyTick: 638405215028276278
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -140,7 +140,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
   spriteSheetImportData:
-  - name: Door_0
+  - name: Door_Open
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -160,7 +160,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Door_1
+  - name: Door_Close
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
