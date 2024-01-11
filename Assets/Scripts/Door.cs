@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// DOOR 
 public class Door : MonoBehaviour
 {
     public Sprite openDoorSprite;
