@@ -8,7 +8,7 @@ using CodeMonkey.Utils;
 public class Grid
 {
     public Vector3 gridStartPosition = Vector3.zero;
-
+//b
     int xLength;
     int yLength;
     GridNode[,] gridArray;
